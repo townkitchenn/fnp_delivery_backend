@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS delivery_items (
     address TEXT NOT NULL,
     delivery_time VARCHAR(100),
     customer_number VARCHAR(15),
-    status ENUM('Pending', 'Assigned', 'Picked', 'Delivered', 'Cancelled') DEFAULT 'Pending',
+    status ENUM('Pending', 'Assigned', 'Picked', 'Out_For_Delivery', 'Delivery_Attempted', 'Delivered', 'Cancelled') DEFAULT 'Pending',
     assigned_delivery_boy_id VARCHAR(36),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (assigned_delivery_boy_id) REFERENCES users(id)

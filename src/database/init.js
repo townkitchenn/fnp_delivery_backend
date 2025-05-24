@@ -26,11 +26,19 @@ const initDatabase = async () => {
         address TEXT NOT NULL,
         delivery_time VARCHAR(100),
         customer_number VARCHAR(15),
-        status ENUM('Pending', 'Assigned', 'Picked', 'Delivered', 'Cancelled') DEFAULT 'Pending',
+        alternative_number VARCHAR(15),
+        image_path VARCHAR(255),
+        delivered_image VARCHAR(255),
+        status ENUM('Pending', 'Assigned', 'Picked', 'Delivered', 'Cancelled', 'Delivery_Attempted') DEFAULT 'Pending',
         assigned_delivery_boy_id VARCHAR(36),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (assigned_delivery_boy_id) REFERENCES users(id)
       )
+    `);
+
+    await connection.query(`
+      ALTER TABLE delivery_items 
+      MODIFY COLUMN status ENUM('Pending', 'Assigned', 'Picked', 'Out_For_Delivery', 'Delivered', 'Cancelled', 'Delivery_Attempted') DEFAULT 'Pending'
     `);
 
     console.log("Database tables initialized successfully");

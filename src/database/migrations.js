@@ -24,6 +24,7 @@ const migrations = async () => {
         address TEXT NOT NULL,
         delivery_time VARCHAR(100),
         customer_number VARCHAR(15),
+        alternative_number VARCHAR(15),
         status ENUM('Pending', 'Assigned', 'Picked', 'Delivered', 'Cancelled') DEFAULT 'Pending',
         assigned_delivery_boy_id VARCHAR(36),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -31,7 +32,67 @@ const migrations = async () => {
       )
     `);
 
-    console.log("Database migrations completed successfully");
+    // Add image_path column if it doesn't exist
+    const [columns] = await db.query(`
+      SELECT COLUMN_NAME 
+      FROM INFORMATION_SCHEMA.COLUMNS 
+      WHERE TABLE_NAME = 'delivery_items' 
+      AND TABLE_SCHEMA = '${process.env.DB_NAME || "fnp_delivery"}'
+      AND COLUMN_NAME = 'image_path'`);
+
+    if (columns.length === 0) {
+      await db.query(`
+        ALTER TABLE delivery_items 
+        ADD COLUMN image_path VARCHAR(255) DEFAULT NULL`);
+      console.log("Added image_path column");
+    }
+
+    // Add alternative_number column if it doesn't exist
+    const [altColumns] = await db.query(`
+      SELECT COLUMN_NAME 
+      FROM INFORMATION_SCHEMA.COLUMNS 
+      WHERE TABLE_NAME = 'delivery_items' 
+      AND TABLE_SCHEMA = '${process.env.DB_NAME || "fnp_delivery"}'
+      AND COLUMN_NAME = 'alternative_number'`);
+
+    if (altColumns.length === 0) {
+      await db.query(`
+        ALTER TABLE delivery_items 
+        ADD COLUMN alternative_number VARCHAR(15) DEFAULT NULL`);
+      console.log("Added alternative_number column");
+    }
+
+    // Add delivered_image column if it doesn't exist
+    const [delColumns] = await db.query(`
+      SELECT COLUMN_NAME 
+      FROM INFORMATION_SCHEMA.COLUMNS 
+      WHERE TABLE_NAME = 'delivery_items' 
+      AND TABLE_SCHEMA = '${process.env.DB_NAME || "fnp_delivery"}'
+      AND COLUMN_NAME = 'delivered_image'`);
+
+    if (delColumns.length === 0) {
+      await db.query(`
+        ALTER TABLE delivery_items 
+        ADD COLUMN delivered_image VARCHAR(255) DEFAULT NULL`);
+      console.log("Added delivered_image column");
+    }
+
+    // Check if location column exists
+    const [locColumns] = await db.query(`
+      SELECT COLUMN_NAME 
+      FROM INFORMATION_SCHEMA.COLUMNS 
+      WHERE TABLE_NAME = 'delivery_items' 
+      AND COLUMN_NAME = 'location'`);
+
+    if (locColumns.length === 0) {
+      await db.query(`
+        ALTER TABLE delivery_items 
+        ADD COLUMN location VARCHAR(255) DEFAULT NULL 
+        AFTER address`);
+      console.log("Added location column");
+    }
+
+    console.log("All migrations completed successfully");
   } catch (error) {
     console.error("Migration failed:", error);
     throw error;

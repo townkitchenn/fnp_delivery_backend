@@ -1,3 +1,5 @@
+const path = require("path");
+
 module.exports = {
   // Use a port for your Express server like 3000
   PORT: 3000,
@@ -10,4 +12,5 @@ module.exports = {
     database: "fnp_delivery",
     port: 3306, // Optional: you can specify this or leave it (3306 is default)
   },
+  UPLOAD_DIR: path.join(__dirname, "../uploads"),
 };
