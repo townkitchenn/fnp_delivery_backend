@@ -12,5 +12,6 @@ module.exports = {
     database: "fnp_delivery",
     port: 3306, // Optional: you can specify this or leave it (3306 is default)
   },
+  HEALTH_CHECK_PATH: "/health",
   UPLOAD_DIR: path.join(__dirname, "../uploads"),
 };

@@ -4,6 +4,7 @@ const authController = require("../controllers/authController");
 const deliveryController = require("../controllers/deliveryController");
 const deliveryBoyController = require("../controllers/deliveryBoyController");
 const upload = require("../config/multerConfig");
+const healthController = require("../controllers/healthController");
 
 router.post("/login", authController.login);
 router.post("/register", authController.register);
@@ -51,5 +52,6 @@ router.get(
   "/delivery-boys/:deliveryBoyId/counts/status",
   deliveryController.getDeliveryBoyStatusCounts
 );
+router.get("/health", healthController.healthCheck);
 
 module.exports = router;
